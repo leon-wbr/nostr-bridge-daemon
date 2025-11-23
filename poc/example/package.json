@@ -1,0 +1,17 @@
+{
+  "name": "nostr-bridge-poc-example",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "npm run build && node dist/index.js"
+  },
+  "dependencies": {
+    "nostr-bridge-poc-core": "file:../core"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

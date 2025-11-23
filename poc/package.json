@@ -1,0 +1,14 @@
+{
+  "name": "nostr-bridge-daemon-poc-workspace",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "core",
+    "example"
+  ],
+  "scripts": {
+    "build": "npm run build -w core && npm run build -w example",
+    "start": "npm run start -w example"
+  }
+}
