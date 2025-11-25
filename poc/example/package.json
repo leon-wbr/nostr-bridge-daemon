@@ -1,17 +1,13 @@
 {
-  "name": "nostr-bridge-poc-example",
+  "name": "@dromedary/poc-example",
   "version": "0.2.0",
   "private": true,
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dromedary.config.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "start": "npm run build && node dist/index.js"
+    "start": "dromedary run --config ./dromedary.config.ts"
   },
   "dependencies": {
-    "nostr-bridge-poc-core": "file:../core"
-  },
-  "devDependencies": {
-    "typescript": "^5.6.3"
+    "@dromedary/poc-core": "file:../core"
   }
 }

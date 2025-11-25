@@ -26,7 +26,6 @@ By standardizing this bridge layer, Dromedary helps connect distributed systems 
 ```ts
 // dromedary.config.ts
 import {
-  createComponentRegistry,
   cronComponent,
   defineConfig,
   emailComponent,
@@ -34,11 +33,11 @@ import {
   nostrComponent,
   tag,
 } from "@dromedary/poc-core";
-import hourlyStatusIntent from "./processors/hourlyStatusIntent.js";
+import statusIntent from "./processors/statusIntent.js";
 import mentionsToIntent from "./processors/mentionsToIntent.js";
 
 export default defineConfig({
-  components: createComponentRegistry({
+  components: {
     nostr: nostrComponent({
       pools: {
         default: ["wss://relay.damus.io", "wss://nostr.wine"],
@@ -59,7 +58,7 @@ export default defineConfig({
     cron: cronComponent({
       timezone: "UTC",
     }),
-  }),
+  },
 
   plugins: [
     createExpoPushPlugin({
@@ -75,10 +74,10 @@ export default defineConfig({
       .process(mentionsToIntent())
       .to("email:notifications?template=mention"),
 
-    // 2) Hourly status → publish note + email ops
-    from("cron:0 * * * *")
-      .process(hourlyStatusIntent())
-      .to("nostr:publicTimeline?kind=1&keyRole=statusBot")
+    // 2) Status tick → publish note + email ops
+    from("* * * * *")
+      .process(statusIntent())
+      .to("nostr:publicTimeline?kind=1")
       .to("email:ops?subject=Hourly%20Status"),
   ],
 });

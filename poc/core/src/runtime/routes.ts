@@ -22,12 +22,12 @@ export interface RouteDefinition {
   from: string;
   filters: FilterFn[];
   processors: Array<(payload: any) => Promise<any> | any>;
-  to: string[];
+  targets: string[];
 }
 
 export type RouteBuilder = RouteDefinition & {
   filter(fn: FilterFn): RouteBuilder;
-  via(processor: (payload: any) => Promise<any> | any): RouteBuilder;
+  process(processor: (payload: any) => Promise<any> | any): RouteBuilder;
   to(targetUri: string): RouteBuilder;
   build(): RouteDefinition;
 };
@@ -37,26 +37,27 @@ export function from(sourceUri: string): RouteBuilder {
     from: sourceUri,
     filters: [],
     processors: [],
-    to: [],
+    targets: [],
   };
 
-  const builder = Object.assign(def, {
+  const builder: RouteBuilder = {
+    ...def,
     filter(fn: FilterFn) {
       def.filters.push(fn);
       return builder;
     },
-    via(processor: (payload: any) => Promise<any> | any) {
+    process(processor: (payload: any) => Promise<any> | any) {
       def.processors.push(processor);
       return builder;
     },
     to(targetUri: string) {
-      def.to.push(targetUri);
+      def.targets.push(targetUri);
       return builder;
     },
     build() {
       return def;
     },
-  });
+  };
 
   return builder;
 }

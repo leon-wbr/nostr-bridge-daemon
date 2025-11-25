@@ -6,10 +6,10 @@ type MentionIntent = {
   tags?: unknown[];
 };
 
-const getContent = (payload: any): string => {
+const getContent = (payload: unknown): string => {
   if (!payload) return '';
   if (typeof payload === 'string') return payload;
-  if (payload.content) return payload.content;
+  if (typeof payload === 'object' && (payload as any).content) return String((payload as any).content);
   return JSON.stringify(payload, null, 2);
 };
 

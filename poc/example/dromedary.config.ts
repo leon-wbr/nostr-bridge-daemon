@@ -1,18 +1,15 @@
 import {
-  createComponentRegistry,
   cronComponent,
   defineConfig,
   emailComponent,
   from,
   nostrComponent,
-  tag,
-} from "nostr-bridge-poc-core";
+} from "@dromedary/poc-core";
 import createExpoPushPlugin from "./plugins/expoPushPlugin.js";
-import hourlyStatusIntent from "./processors/hourlyStatusIntent.js";
-import mentionsToIntent from "./processors/mentionsToIntent.js";
+import statusIntent from "./processors/statusIntent.js";
 
 export default defineConfig({
-  components: createComponentRegistry({
+  components: {
     nostr: nostrComponent({
       pools: {
         default: ["wss://relay.damus.io", "wss://nostr.wine"],
@@ -31,22 +28,17 @@ export default defineConfig({
     cron: cronComponent({
       timezone: "UTC",
     }),
-  }),
+  },
   plugins: [
     createExpoPushPlugin({
-      accessToken: process.env.EXPOACCESSTOKEN || process.env.EXPO_ACCESS_TOKEN,
-      pool: "default",
+      privateKey: process.env.EXPO_PRIVATE_KEY || "",
+      accessToken: process.env.EXPO_ACCESS_TOKEN || "",
     }),
   ],
   routes: [
-    from("nostr:publicTimeline?kinds=1")
-      .filter(tag("p").exists())
-      .via(mentionsToIntent())
-      .to("email:notifications?template=mention"),
-
-    from("cron:0 * * * *")
-      .via(hourlyStatusIntent())
-      .to("nostr:publicTimeline?kind=1&keyRole=statusBot")
+    from("cron:* * * * *")
+      .process(statusIntent())
+      .to("nostr:publicTimeline?kind=1")
       .to("email:ops?subject=Hourly%20Status"),
   ],
 });

@@ -1,11 +1,11 @@
-import type { ComponentRegistry } from './registry.js';
-import type { RouteDefinition } from './routes.js';
-import { from, kind, tag } from './routes.js';
+import type { ComponentRegistry } from "./registry.js";
+import type { RouteDefinition } from "./routes.js";
+import { from, kind, tag } from "./routes.js";
 
-export type NbdRuntimeConfig = {
-  components: ComponentRegistry;
-  routes: RouteDefinition[];
-  plugins?: NbdPlugin[];
+export type DromedaryRuntimeConfig = {
+  components?: ComponentRegistry;
+  routes?: RouteDefinition[];
+  plugins?: DromedaryPlugin[];
 };
 
 export type PluginRegistrationContext = {
@@ -19,12 +19,19 @@ export type PluginContribution = {
   routes?: RouteDefinition[];
 };
 
-export type NbdPlugin = PluginContribution | ((ctx: PluginRegistrationContext) => PluginContribution);
+export type DromedaryPlugin =
+  | PluginContribution
+  | ((
+      ctx: PluginRegistrationContext,
+      config: DromedaryRuntimeConfig
+    ) => PluginContribution);
 
-export const defineConfig = (config: NbdRuntimeConfig): NbdRuntimeConfig => {
+export const defineConfig = (
+  config: DromedaryRuntimeConfig
+): DromedaryRuntimeConfig => {
   const pluginCtx: PluginRegistrationContext = { from, kind, tag };
   const contributions = (config.plugins ?? []).map((plugin) =>
-    typeof plugin === 'function' ? plugin(pluginCtx) : plugin,
+    typeof plugin === "function" ? plugin(pluginCtx, config) : plugin
   );
 
   const mergedComponents: ComponentRegistry = { ...config.components };
@@ -34,7 +41,7 @@ export const defineConfig = (config: NbdRuntimeConfig): NbdRuntimeConfig => {
     }
   }
 
-  const mergedRoutes: RouteDefinition[] = [...config.routes];
+  const mergedRoutes: RouteDefinition[] = [...(config.routes ?? [])];
   for (const contrib of contributions) {
     if (contrib.routes) mergedRoutes.push(...contrib.routes);
   }
