@@ -177,13 +177,7 @@ Feedback, collaboration, and design discussions are encouraged — join the conv
 - **Developers:** contribute to the core runtime or create new components and plugins.  
 - **Sponsors & Donors:** support development, testing, and long-term maintenance.
 
-Your involvement helps turn Dromedary into a shared, reliable foundation for Nostr-connected services.  
-
-## ❗ PoC Drawbacks
-
-- The built-in Nostr component is still basic—it keeps pools of relays but doesn’t yet handle deduplication, adaptive retries, or smart filter management.
-- There is no “real” functionality yet; the current build is for experimentation, documentation, and verifying plumbing. Advanced features and production-hardening remain future work.
-- Expo Push example relies on NIP-4 for decrypting app data, which is unrecommended in favor of NIP-17.
+Your involvement helps turn Dromedary into a shared, reliable foundation for Nostr-connected services.
 
 ## 📜 License
 
